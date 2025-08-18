@@ -23,11 +23,11 @@ func main() {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "deployment-id",
-				Aliases:  []string{"d"},
-				Usage:    "ID of the deployment to notify Watchly about",
-				Sources:  cli.EnvVars("WATCHLY_DEPLOYMENT_ID"),
-				Required: true,
+				Name:    "deployment-id",
+				Aliases: []string{"d"},
+				Value:   "",
+				Usage:   "ID of the deployment to notify Watchly about",
+				Sources: cli.EnvVars("WATCHLY_DEPLOYMENT_ID"),
 			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
