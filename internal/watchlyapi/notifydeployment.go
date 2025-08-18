@@ -45,7 +45,7 @@ func NotifyDeployment(apiKey, deploymentId, githubSha, githubRunId, githubJobId 
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to notify Watchly: %s", resp.Status)
 	}
 
