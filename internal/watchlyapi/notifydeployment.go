@@ -13,7 +13,7 @@ type DeploymentNotification struct {
 	DeploymentID string `json:"id"`
 	GitHubRunID  string `json:"github_run_id"`
 	GitHubJobID  string `json:"github_job_id"`
-	CommitSHA    string `json:"commit_sha"`
+	CommitSHA    string `json:"commit_hash"`
 	CommitAuthor string `json:"commit_author"`
 }
 
