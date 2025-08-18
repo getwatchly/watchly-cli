@@ -35,7 +35,7 @@ func main() {
 			deploymentId := cmd.String("deployment-id")
 			githubSha := os.Getenv("GITHUB_SHA")
 			githubRunId := os.Getenv("GITHUB_RUN_ID")
-			githubJobId := os.Getenv("GITHUB_JOB_ID")
+			githubJobId := os.Getenv("GITHUB_JOB")
 
 			if githubSha == "" || githubRunId == "" || githubJobId == "" {
 				return fmt.Errorf("missing required environment variables, are you running this in a GitHub Actions environment?")
