@@ -26,10 +26,10 @@ type DeploymentStartResponse struct {
 	DeploymentID string `json:"id"`
 }
 
-func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId, githubJobId string) (string, error) {
+func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId string) (string, error) {
 	body := DeploymentStartBody{
 		CommitSHA: githubSha,
-		Url:       fmt.Sprintf("https://github.com/%s/actions/runs/%s/job/%s", githubRepoFullName, githubRunId, githubJobId),
+		Url:       fmt.Sprintf("https://github.com/%s/actions/runs/%s", githubRepoFullName, githubRunId),
 	}
 
 	marshalledBody, err := json.Marshal(body)
