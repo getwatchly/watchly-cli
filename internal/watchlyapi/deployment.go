@@ -97,7 +97,7 @@ func FinishDeployment(apiKey, deploymentId, status, completedAt string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("failed to notify Watchly: %s", resp.Status)
 	}
 
