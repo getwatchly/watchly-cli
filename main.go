@@ -78,6 +78,13 @@ func main() {
 						Usage: "Finish a deployment",
 						Flags: []cli.Flag{
 							&cli.StringFlag{
+								Name:     "api-key",
+								Aliases:  []string{"k"},
+								Usage:    "Watchly API key for your project",
+								Sources:  cli.EnvVars("WATCHLY_API_KEY"),
+								Required: true,
+							},
+							&cli.StringFlag{
 								Name:    "deployment-id",
 								Aliases: []string{"d"},
 								Value:   "",
