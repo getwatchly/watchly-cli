@@ -43,7 +43,10 @@ func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId string) 
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey)
+	
+	q := req.URL.Query()
+	q.Add("api_key", apiKey)
+	req.URL.RawQuery = q.Encode()
 
 	client := NewHttpClient()
 	resp, err := client.Do(req)
