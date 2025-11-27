@@ -42,9 +42,11 @@ func main() {
 								return fmt.Errorf("missing required environment variables, are you running this in a GitHub Actions environment?")
 							}
 
+							deploymentUrl := fmt.Sprintf("https://github.com/%s/actions/runs/%s", githubRepoFullName, githubRunId)
+
 							fmt.Println("watchly-cli - 🔭 Contacting Watchly ...")
 
-							deploymentId, err := watchlyapi.StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId)
+							deploymentId, err := watchlyapi.StartDeployment(apiKey, githubSha, deploymentUrl)
 							if err != nil {
 								return fmt.Errorf("failed to notify Watchly: %w", err)
 							}
@@ -84,13 +86,6 @@ func main() {
 								Required: true,
 							},
 							&cli.StringFlag{
-								Name:    "deployment-id",
-								Aliases: []string{"d"},
-								Value:   "",
-								Usage:   "ID of the deployment to notify Watchly about",
-								Sources: cli.EnvVars("WATCHLY_DEPLOYMENT_ID"),
-							},
-							&cli.StringFlag{
 								Name:     "status",
 								Aliases:  []string{"s"},
 								Required: true,
@@ -107,12 +102,12 @@ func main() {
 						},
 						Action: func(ctx context.Context, cmd *cli.Command) error {
 							apiKey := cmd.String("api-key")
-							deploymentId := cmd.String("deployment-id")
 							status := cmd.String("status")
 							completedAt := cmd.String("completed-at")
+							githubSha := os.Getenv("GITHUB_SHA")
 
-							if deploymentId == "" {
-								return fmt.Errorf("missing deployment-id, this should not have happened. check if env variable WATCHLY_DEPLOYMENT_ID is set")
+							if githubSha == "" {
+								return fmt.Errorf("missing required environment variables, are you running this in a GitHub Actions environment?")
 							}
 
 							if status != "successful" && status != "failed" {
@@ -123,7 +118,7 @@ func main() {
 								completedAt = time.Now().UTC().Format(time.RFC3339)
 							}
 
-							if err := watchlyapi.FinishDeployment(apiKey, deploymentId, status, completedAt); err != nil {
+							if err := watchlyapi.FinishDeployment(apiKey, githubSha, status, completedAt); err != nil {
 								return fmt.Errorf("failed to notify Watchly: %w", err)
 							}
 

@@ -18,18 +18,16 @@ type DeploymentNotification struct {
 }
 
 type DeploymentStartBody struct {
-	CommitSHA string `json:"commit_hash"`
-	Url       string `json:"url"`
+	Url string `json:"url"`
 }
 
 type DeploymentStartResponse struct {
 	DeploymentID string `json:"id"`
 }
 
-func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId string) (string, error) {
+func StartDeployment(apiKey, githubSha, deploymentUrl string) (string, error) {
 	body := DeploymentStartBody{
-		CommitSHA: githubSha,
-		Url:       fmt.Sprintf("https://github.com/%s/actions/runs/%s", githubRepoFullName, githubRunId),
+		Url: deploymentUrl,
 	}
 
 	marshalledBody, err := json.Marshal(body)
@@ -37,16 +35,13 @@ func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId string) 
 		return "", err
 	}
 
-	req, err := http.NewRequest("POST", WATCHLY_ENDPOINT+"/webhooks/deployments/start", bytes.NewBuffer(marshalledBody))
+	req, err := http.NewRequest("POST", WATCHLY_ENDPOINT+"/webhooks/deployments/start/"+githubSha, bytes.NewBuffer(marshalledBody))
 	if err != nil {
 		return "", err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	
-	q := req.URL.Query()
-	q.Add("api_key", apiKey)
-	req.URL.RawQuery = q.Encode()
+	req.Header.Set("Authorization", "Bearer "+apiKey)
 
 	client := NewHttpClient()
 	resp, err := client.Do(req)
@@ -68,16 +63,14 @@ func StartDeployment(apiKey, githubRepoFullName, githubSha, githubRunId string) 
 }
 
 type DeploymentFinishBody struct {
-	DeploymentID string `json:"id"`
-	Status       string `json:"status"`
-	CompletedAt  string `json:"completed_at"`
+	Status      string `json:"status"`
+	CompletedAt string `json:"completed_at"`
 }
 
-func FinishDeployment(apiKey, deploymentId, status, completedAt string) error {
+func FinishDeployment(apiKey, githubSha, status, completedAt string) error {
 	body := DeploymentFinishBody{
-		DeploymentID: deploymentId,
-		Status:       status,
-		CompletedAt:  completedAt,
+		Status:      status,
+		CompletedAt: completedAt,
 	}
 
 	marshalledBody, err := json.Marshal(body)
@@ -85,7 +78,7 @@ func FinishDeployment(apiKey, deploymentId, status, completedAt string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", WATCHLY_ENDPOINT+"/webhooks/deployments/finish", bytes.NewBuffer(marshalledBody))
+	req, err := http.NewRequest("POST", WATCHLY_ENDPOINT+"/webhooks/deployments/finish/"+githubSha, bytes.NewBuffer(marshalledBody))
 	if err != nil {
 		return err
 	}
