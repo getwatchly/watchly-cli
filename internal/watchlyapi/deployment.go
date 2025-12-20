@@ -18,16 +18,18 @@ type DeploymentNotification struct {
 }
 
 type DeploymentStartBody struct {
-	Url string `json:"url"`
+	Url        string `json:"url"`
+	ReleaseTag string `json:"release_tag,omitempty"`
 }
 
 type DeploymentStartResponse struct {
 	DeploymentID string `json:"id"`
 }
 
-func StartDeployment(apiKey, githubSha, deploymentUrl string) (string, error) {
+func StartDeployment(apiKey, githubSha, deploymentUrl, releaseTag string) (string, error) {
 	body := DeploymentStartBody{
-		Url: deploymentUrl,
+		Url:        deploymentUrl,
+		ReleaseTag: releaseTag,
 	}
 
 	marshalledBody, err := json.Marshal(body)

@@ -37,6 +37,7 @@ func main() {
 							githubRepoFullName := os.Getenv("GITHUB_REPOSITORY")
 							githubSha := os.Getenv("GITHUB_SHA")
 							githubRunId := os.Getenv("GITHUB_RUN_ID")
+							releaseTag := os.Getenv("RELEASE_TAG")
 
 							if githubRepoFullName == "" || githubSha == "" || githubRunId == "" {
 								return fmt.Errorf("missing required environment variables, are you running this in a GitHub Actions environment?")
@@ -46,7 +47,7 @@ func main() {
 
 							fmt.Println("watchly-cli - 🔭 Contacting Watchly ...")
 
-							deploymentId, err := watchlyapi.StartDeployment(apiKey, githubSha, deploymentUrl)
+							deploymentId, err := watchlyapi.StartDeployment(apiKey, githubSha, deploymentUrl, releaseTag)
 							if err != nil {
 								return fmt.Errorf("failed to notify Watchly: %w", err)
 							}
