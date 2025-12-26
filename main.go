@@ -128,6 +128,58 @@ func main() {
 							return nil
 						},
 					},
+					{
+						Name:  "freeze",
+						Usage: "Freeze deployments for this project",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:     "api-key",
+								Aliases:  []string{"k"},
+								Usage:    "Watchly API key for your project",
+								Sources:  cli.EnvVars("WATCHLY_API_KEY"),
+								Required: true,
+							},
+						},
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							apiKey := cmd.String("api-key")
+
+							fmt.Println("watchly-cli - ❄️ Freezing deployments...")
+
+							if err := watchlyapi.UpdateProjectSettings(apiKey, true); err != nil {
+								return fmt.Errorf("failed to freeze deployments: %w", err)
+							}
+
+							fmt.Println("watchly-cli - ✅ Deployments frozen")
+
+							return nil
+						},
+					},
+					{
+						Name:  "unfreeze",
+						Usage: "Unfreeze deployments for this project",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:     "api-key",
+								Aliases:  []string{"k"},
+								Usage:    "Watchly API key for your project",
+								Sources:  cli.EnvVars("WATCHLY_API_KEY"),
+								Required: true,
+							},
+						},
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							apiKey := cmd.String("api-key")
+
+							fmt.Println("watchly-cli - 🔥Unfreezing deployments...")
+
+							if err := watchlyapi.UpdateProjectSettings(apiKey, false); err != nil {
+								return fmt.Errorf("failed to unfreeze deployments: %w", err)
+							}
+
+							fmt.Println("watchly-cli - ✅ Deployments unfrozen")
+
+							return nil
+						},
+					},
 				},
 			}},
 	}
