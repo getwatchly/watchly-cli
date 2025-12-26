@@ -128,6 +128,12 @@ func main() {
 							return nil
 						},
 					},
+				},
+			},
+			{
+				Name:  "deployments",
+				Usage: "Manage deployment settings",
+				Commands: []*cli.Command{
 					{
 						Name:  "freeze",
 						Usage: "Freeze deployments for this project",
