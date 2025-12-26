@@ -147,3 +147,34 @@ func UpdateProjectSettings(apiKey string, deploymentFreeze bool) error {
 
 	return nil
 }
+
+type ProjectEnabledResponse struct {
+	Enabled bool `json:"enabled"`
+}
+
+func GetProjectEnabled(apiKey string) (bool, error) {
+	req, err := http.NewRequest("GET", WATCHLY_ENDPOINT+"/webhooks/projects/enabled", nil)
+	if err != nil {
+		return false, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	client := NewHttpClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return false, fmt.Errorf("failed to get project enabled status: %s", resp.Status)
+	}
+
+	var response ProjectEnabledResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return false, err
+	}
+
+	return response.Enabled, nil
+}

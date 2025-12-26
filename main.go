@@ -186,6 +186,35 @@ func main() {
 							return nil
 						},
 					},
+					{
+						Name:  "enabled",
+						Usage: "Check if deployments are enabled for this project",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:     "api-key",
+								Aliases:  []string{"k"},
+								Usage:    "Watchly API key for your project",
+								Sources:  cli.EnvVars("WATCHLY_API_KEY"),
+								Required: true,
+							},
+						},
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							apiKey := cmd.String("api-key")
+
+							enabled, err := watchlyapi.GetProjectEnabled(apiKey)
+							if err != nil {
+								return fmt.Errorf("failed to get project enabled status: %w", err)
+							}
+
+							if enabled {
+								fmt.Println("watchly-cli - ✅ Deployments are enabled")
+							} else {
+								fmt.Println("watchly-cli - ❌ Deployments are disabled")
+							}
+
+							return nil
+						},
+					},
 				},
 			}},
 	}
