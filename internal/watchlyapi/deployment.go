@@ -152,8 +152,8 @@ type ProjectEnabledResponse struct {
 	Enabled bool `json:"enabled"`
 }
 
-func GetProjectEnabled(apiKey string) (bool, error) {
-	req, err := http.NewRequest("GET", WATCHLY_ENDPOINT+"/webhooks/projects/enabled", nil)
+func GetDeploymentsEnabled(apiKey string) (bool, error) {
+	req, err := http.NewRequest("GET", WATCHLY_ENDPOINT+"/webhooks/deployments/enabled", nil)
 	if err != nil {
 		return false, err
 	}

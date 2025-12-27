@@ -201,9 +201,9 @@ func main() {
 						Action: func(ctx context.Context, cmd *cli.Command) error {
 							apiKey := cmd.String("api-key")
 
-							enabled, err := watchlyapi.GetProjectEnabled(apiKey)
+							enabled, err := watchlyapi.GetDeploymentsEnabled(apiKey)
 							if err != nil {
-								return fmt.Errorf("failed to get project enabled status: %w", err)
+								return err
 							}
 
 							if enabled {
