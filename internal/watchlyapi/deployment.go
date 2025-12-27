@@ -101,3 +101,80 @@ func FinishDeployment(apiKey, githubSha, status, completedAt string) error {
 
 	return nil
 }
+
+type ProjectSettingsUpdateBody struct {
+	DeploymentFreeze *bool `json:"deployment_freeze,omitempty"`
+}
+
+type ProjectSettingsUpdateResponse struct {
+	Message string `json:"message"`
+}
+
+func UpdateProjectSettings(apiKey string, deploymentFreeze bool) error {
+	deploymentFreezePtr := &deploymentFreeze
+	body := ProjectSettingsUpdateBody{
+		DeploymentFreeze: deploymentFreezePtr,
+	}
+
+	marshalledBody, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", WATCHLY_ENDPOINT+"/webhooks/projects", bytes.NewBuffer(marshalledBody))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	client := NewHttpClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return fmt.Errorf("failed to update project settings: %s", resp.Status)
+	}
+
+	var response ProjectSettingsUpdateResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type ProjectEnabledResponse struct {
+	Enabled bool `json:"enabled"`
+}
+
+func GetProjectEnabled(apiKey string) (bool, error) {
+	req, err := http.NewRequest("GET", WATCHLY_ENDPOINT+"/webhooks/projects/enabled", nil)
+	if err != nil {
+		return false, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	client := NewHttpClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return false, fmt.Errorf("failed to get project enabled status: %s", resp.Status)
+	}
+
+	var response ProjectEnabledResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return false, err
+	}
+
+	return response.Enabled, nil
+}
