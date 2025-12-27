@@ -131,8 +131,8 @@ func main() {
 				},
 			},
 			{
-				Name:  "deployments",
-				Usage: "Manage deployment settings",
+				Name:  "repository",
+				Usage: "Manage repository settings",
 				Commands: []*cli.Command{
 					{
 						Name:  "freeze",
