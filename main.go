@@ -207,9 +207,9 @@ func main() {
 							}
 
 							if enabled {
-								fmt.Println("watchly-cli - ✅ Deployments are enabled")
+								fmt.Println("enabled=true")
 							} else {
-								fmt.Println("watchly-cli - ❌ Deployments are disabled")
+								fmt.Println("enabled=false")
 							}
 
 							return nil
